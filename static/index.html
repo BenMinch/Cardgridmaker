@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Sheet Generator</title>
+</head>
+<body>
+    <h2>Upload CSV and Card Images (ZIP)</h2>
+    <form id="upload-form" enctype="multipart/form-data">
+        <label>CSV File:</label>
+        <input type="file" name="csv" required><br><br>
+        
+        <label>ZIP File (Images):</label>
+        <input type="file" name="zip" required><br><br>
+
+        <label>Card Width (mm):</label>
+        <input type="number" name="card_width" value="63"><br><br>
+
+        <label>Card Height (mm):</label>
+        <input type="number" name="card_height" value="88.4"><br><br>
+
+        <button type="submit">Generate PDF</button>
+    </form>
+
+    <p id="status"></p>
+    <script>
+        document.getElementById("upload-form").onsubmit = async function (e) {
+            e.preventDefault();
+            let formData = new FormData(this);
+
+            document.getElementById("status").innerText = "Processing...";
+            
+            let response = await fetch("/upload", {
+                method: "POST",
+                body: formData
+            });
+
+            if (response.ok) {
+                let blob = await response.blob();
+                let link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = "generated_cards.pdf";
+                link.click();
+                document.getElementById("status").innerText = "PDF Ready!";
+            } else {
+                document.getElementById("status").innerText = "Error!";
+            }
+        };
+    </script>
+</body>
+</html>
+
