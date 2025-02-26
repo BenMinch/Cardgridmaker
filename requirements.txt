@@ -3,3 +3,4 @@ Werkzeug
 Pillow
 reportlab
 PyMuPDF
+gunicorn
